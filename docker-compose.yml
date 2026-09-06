@@ -1,0 +1,68 @@
+##############################################################################
+# DrugShield — Development Infrastructure
+# SIH26231: Digital Companion for Field Drug Testing
+##############################################################################
+
+services:
+
+  # --------------------------------------------------------------------------
+  # PostgreSQL 16 + PostGIS + TimescaleDB
+  # Geospatial analytics & time-series seizure intelligence
+  # --------------------------------------------------------------------------
+  postgres:
+    image: timescale/timescaledb-ha:pg16
+    container_name: drugshield-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: drugshield
+      POSTGRES_USER: drugshield
+      POSTGRES_PASSWORD: ds_dev_secret_2026
+    volumes:
+      - pgdata:/home/postgres/pgdata/data
+      - ./backend/internal/repository/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U drugshield"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --------------------------------------------------------------------------
+  # Redis 7.x Cluster
+  # Rate limiting, offline sync queue staging, pub/sub events
+  # --------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: drugshield-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # --------------------------------------------------------------------------
+  # MinIO S3-Compatible Object Store
+  # Off-chain encrypted evidence blob storage (IPFS alternative for dev)
+  # --------------------------------------------------------------------------
+  minio:
+    image: minio/minio:latest
+    container_name: drugshield-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: drugshield
+      MINIO_ROOT_PASSWORD: ds_minio_secret_2026
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  pgdata:
+  minio_data:

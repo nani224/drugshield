@@ -1,0 +1,18 @@
+# DrugShield ML Pipeline — Python Dependencies
+# SIH26231: Digital Companion for Field Drug Testing
+
+tensorflow>=2.18.0
+tensorflow-datasets>=4.9.0
+keras>=3.7.0
+opencv-python-headless>=4.10.0
+scikit-learn>=1.6.0
+numpy>=2.1.0
+pandas>=2.2.0
+matplotlib>=3.9.0
+seaborn>=0.13.0
+Pillow>=11.0.0
+albumentations>=2.0.0        # Advanced image augmentation
+colormath>=3.0.0             # CIE L*a*b* color space utilities
+jupyter>=1.1.0
+notebook>=7.3.0
+tqdm>=4.67.0

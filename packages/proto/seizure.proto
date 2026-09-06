@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package drugshield.v1;
+
+option go_package = "github.com/drugshield/backend/internal/handler/pb";
+
+import "google/protobuf/timestamp.proto";
+
+// ============================================================================
+// DrugShield gRPC Service — Field Evidence Ingestion & Query
+// ============================================================================
+
+service DrugShieldService {
+  // Submit a new field drug test result (from mobile client)
+  rpc SubmitSeizure(SubmitSeizureRequest) returns (SubmitSeizureResponse);
+
+  // Query seizure records by geographic bounding box
+  rpc QueryByLocation(LocationQueryRequest) returns (LocationQueryResponse);
+
+  // Verify the cryptographic integrity of a seizure record
+  rpc VerifyIntegrity(VerifyIntegrityRequest) returns (VerifyIntegrityResponse);
+
+  // Endorse forensic lab confirmation result
+  rpc EndorseForensicResult(ForensicEndorsementRequest) returns (ForensicEndorsementResponse);
+}
+
+// ============================================================================
+// Messages
+// ============================================================================
+
+message GeoPoint {
+  double latitude = 1;
+  double longitude = 2;
+  float accuracy_meters = 3;
+}
+
+message FieldTestResult {
+  string reagent_name = 1;           // e.g., "Scott Reagent"
+  string detected_substance = 2;     // e.g., "Cocaine Hydrochloride"
+  float confidence_score = 3;        // 0.0 to 1.0
+  float lab_l_star = 4;              // CIE L* calibrated luminance
+  float lab_a_star = 5;              // CIE a* chromaticity
+  float lab_b_star = 6;              // CIE b* chromaticity
+  string model_checksum = 7;         // SHA-256 of the .tflite model used
+}
+
+message WitnessRecord {
+  int32 witness_index = 1;
+  string name_hash = 2;              // SHA-256(name) — PII not stored in plaintext
+  string phone_hash = 3;             // SHA-256(phone)
+  bytes signature_image_png = 4;     // Digital signature captured on touchscreen
+}
+
+message EvidencePayload {
+  bytes raw_image_sha256 = 1;        // SHA-256 hash of the uncompressed 12MP image
+  bytes payload_ecdsa_signature = 2; // ECDSA secp256r1 signature from device HSM
+  string officer_public_key_thumbprint = 3;
+}
+
+message EnvironmentalTelemetry {
+  float ambient_lux = 1;
+  float temperature_celsius = 2;
+  string network_cell_id = 3;
+  string device_model = 4;
+  string os_version = 5;
+}
+
+// --- Submit Seizure ---
+
+message SubmitSeizureRequest {
+  string case_number = 1;             // e.g., "NDPS/CR/2026/1842"
+  string officer_badge_number = 2;
+  google.protobuf.Timestamp seizure_time = 3;
+  GeoPoint location = 4;
+  FieldTestResult field_test = 5;
+  repeated WitnessRecord witnesses = 6;
+  EvidencePayload evidence = 7;
+  EnvironmentalTelemetry telemetry = 8;
+  string evidence_seal_barcode = 9;   // Pre-printed tamper-evident bag ID
+  bytes raw_image_bytes = 10;         // Encrypted AES-256-GCM image for IPFS upload
+}
+
+message SubmitSeizureResponse {
+  string seizure_id = 1;              // e.g., "SEIZ-2026-DEL-00941"
+  string fabric_transaction_id = 2;   // Hyperledger Fabric TxID
+  string ipfs_cid = 3;               // Content Identifier for off-chain image
+  string status = 4;                  // "COMMITTED_ON_CHAIN"
+}
+
+// --- Query by Location ---
+
+message LocationQueryRequest {
+  double min_latitude = 1;
+  double min_longitude = 2;
+  double max_latitude = 3;
+  double max_longitude = 4;
+  google.protobuf.Timestamp start_time = 5;
+  google.protobuf.Timestamp end_time = 6;
+  string substance_filter = 7;       // Optional: filter by drug type
+  int32 limit = 8;
+}
+
+message SeizureSummary {
+  string seizure_id = 1;
+  string case_number = 2;
+  string detected_substance = 3;
+  float confidence_score = 4;
+  GeoPoint location = 5;
+  google.protobuf.Timestamp seizure_time = 6;
+  string status = 7;
+}
+
+message LocationQueryResponse {
+  repeated SeizureSummary seizures = 1;
+  int32 total_count = 2;
+}
+
+// --- Verify Integrity ---
+
+message VerifyIntegrityRequest {
+  bytes file_sha256 = 1;              // SHA-256 of the evidence file to verify
+}
+
+message VerifyIntegrityResponse {
+  bool is_valid = 1;
+  string seizure_id = 2;
+  string officer_badge_number = 3;
+  google.protobuf.Timestamp seizure_time = 4;
+  string fabric_transaction_id = 5;
+  string verification_message = 6;   // "Cryptographically Verified: Zero tampering"
+}
+
+// --- Forensic Lab Endorsement ---
+
+message ForensicEndorsementRequest {
+  string seizure_id = 1;
+  string laboratory_id = 2;           // e.g., "CFSL-CHANDIGARH"
+  string scientist_badge_number = 3;
+  string confirmation_status = 4;     // "CONFIRMED" | "REJECTED" | "INCONCLUSIVE"
+  bytes gcms_report_sha256 = 5;       // SHA-256 of the GC-MS spectral report
+  google.protobuf.Timestamp endorsement_time = 6;
+}
+
+message ForensicEndorsementResponse {
+  string fabric_transaction_id = 1;
+  string status = 2;
+}
