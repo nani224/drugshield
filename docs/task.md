@@ -48,15 +48,15 @@
 - [x] 2.8 Evidence Vault Screen (SHA-256 + QR + local save)
 
 ## 🔴 Phase 3: Trust Layer — Blockchain & Backend (Days 3–4)
-- [ ] 3.1 Docker Desktop + WSL2 + Fabric Docker images
-- [ ] 3.2 Configure 4-org Fabric test network
-- [ ] 3.3 Deploy `drug_chaincode.go` on all peers
-- [ ] 3.4 Deploy MinIO/IPFS evidence storage
-- [ ] 3.5 Build Go Gateway (mTLS + ECDSA verify + IPFS upload + Fabric submit)
-- [ ] 3.6 Implement `crypto_signer` Flutter plugin (StrongBox / SE)
-- [ ] 3.7 Implement Drift + SQLCipher encrypted local DB
-- [ ] 3.8 Background sync service (offline → online dispatch)
-- [ ] 3.9 Set up PostGIS + TimescaleDB analytics DB
+- [x] 3.1 Docker Desktop + WSL2 + Fabric Docker images
+- [x] 3.2 Configure 4-org Fabric test network
+- [x] 3.3 Deploy `drug_chaincode.go` on all peers
+- [x] 3.4 Deploy MinIO/IPFS evidence storage
+- [x] 3.5 Build Go Gateway (mTLS + ECDSA verify + IPFS upload + Fabric submit)
+- [x] 3.6 Implement `crypto_signer` Flutter plugin (StrongBox / SE)
+- [x] 3.7 Implement Drift + SQLCipher encrypted local DB
+- [x] 3.8 Background sync service (offline → online dispatch)
+- [x] 3.9 Set up PostGIS + TimescaleDB analytics DB
 
 ## 🔵 Phase 4: Command Portal & Demo (Days 4–5)
 - [ ] 4.1 Scaffold Next.js 15 + pnpm + Tailwind (dark slate theme)

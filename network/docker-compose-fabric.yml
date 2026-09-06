@@ -1,0 +1,202 @@
+##############################################################################
+# DrugShield — Hyperledger Fabric 3.0 Consortium Network
+# SIH26231: Digital Companion for Field Drug Testing
+#
+# 4-Organization Production Consortium:
+#   1. NCB Apex (National Narcotics Bureau) - Peer0 (Port 7051)
+#   2. State Police (Field Interdiction)    - Peer0 (Port 8051)
+#   3. CFSL (Forensic Science Laboratories) - Peer0 (Port 9051)
+#   4. Judiciary / eCourts (Audit Node)     - Peer0 (Port 10051)
+#   5. Raft BFT Ordering Service            - Orderer (Port 7050)
+##############################################################################
+
+version: '3.8'
+
+networks:
+  drugshield-fabric:
+    name: drugshield-fabric
+
+services:
+
+  # --------------------------------------------------------------------------
+  # Raft BFT Ordering Node
+  # --------------------------------------------------------------------------
+  orderer.drugshield.gov.in:
+    image: hyperledger/fabric-orderer:2.5
+    container_name: orderer.drugshield.gov.in
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+      - ./crypto-config/ordererOrganizations/drugshield.gov.in/orderers/orderer.drugshield.gov.in/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/drugshield.gov.in/orderers/orderer.drugshield.gov.in/tls:/var/hyperledger/orderer/tls
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    ports:
+      - "7050:7050"
+    networks:
+      - drugshield-fabric
+
+  # --------------------------------------------------------------------------
+  # Org 1: Narcotics Control Bureau (NCB Apex) Peer
+  # --------------------------------------------------------------------------
+  peer0.ncb.gov.in:
+    image: hyperledger/fabric-peer:2.5
+    container_name: peer0.ncb.gov.in
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=drugshield-fabric
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.ncb.gov.in
+      - CORE_PEER_ADDRESS=peer0.ncb.gov.in:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.ncb.gov.in:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.ncb.gov.in:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.ncb.gov.in:7051
+      - CORE_PEER_LOCALMSPID=NcbMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.ncb:5984
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ./crypto-config/peerOrganizations/ncb.gov.in/peers/peer0.ncb.gov.in/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/ncb.gov.in/peers/peer0.ncb.gov.in/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - "7051:7051"
+    depends_on:
+      - couchdb.ncb
+    networks:
+      - drugshield-fabric
+
+  couchdb.ncb:
+    image: couchdb:3.3
+    container_name: couchdb.ncb
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=ds_couchdb_secret_2026
+    ports:
+      - "5984:5984"
+    networks:
+      - drugshield-fabric
+
+  # --------------------------------------------------------------------------
+  # Org 2: State Police Peer
+  # --------------------------------------------------------------------------
+  peer0.police.gov.in:
+    image: hyperledger/fabric-peer:2.5
+    container_name: peer0.police.gov.in
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=drugshield-fabric
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.police.gov.in
+      - CORE_PEER_ADDRESS=peer0.police.gov.in:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_LOCALMSPID=PoliceMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.police:5984
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ./crypto-config/peerOrganizations/police.gov.in/peers/peer0.police.gov.in/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/police.gov.in/peers/peer0.police.gov.in/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - "8051:8051"
+    depends_on:
+      - couchdb.police
+    networks:
+      - drugshield-fabric
+
+  couchdb.police:
+    image: couchdb:3.3
+    container_name: couchdb.police
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=ds_couchdb_secret_2026
+    ports:
+      - "6984:5984"
+    networks:
+      - drugshield-fabric
+
+  # --------------------------------------------------------------------------
+  # Org 3: Central Forensic Science Laboratories (CFSL) Peer
+  # --------------------------------------------------------------------------
+  peer0.cfsl.gov.in:
+    image: hyperledger/fabric-peer:2.5
+    container_name: peer0.cfsl.gov.in
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=drugshield-fabric
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.cfsl.gov.in
+      - CORE_PEER_ADDRESS=peer0.cfsl.gov.in:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_LOCALMSPID=CfslMSP
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ./crypto-config/peerOrganizations/cfsl.gov.in/peers/peer0.cfsl.gov.in/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/cfsl.gov.in/peers/peer0.cfsl.gov.in/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - "9051:9051"
+    networks:
+      - drugshield-fabric
+
+  # --------------------------------------------------------------------------
+  # Org 4: Judiciary / eCourts Auditor Peer (Read-Only State Verification)
+  # --------------------------------------------------------------------------
+  peer0.judiciary.gov.in:
+    image: hyperledger/fabric-peer:2.5
+    container_name: peer0.judiciary.gov.in
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=drugshield-fabric
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.judiciary.gov.in
+      - CORE_PEER_ADDRESS=peer0.judiciary.gov.in:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_LOCALMSPID=JudiciaryMSP
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ./crypto-config/peerOrganizations/judiciary.gov.in/peers/peer0.judiciary.gov.in/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/judiciary.gov.in/peers/peer0.judiciary.gov.in/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - "10051:10051"
+    networks:
+      - drugshield-fabric

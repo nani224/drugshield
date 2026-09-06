@@ -1,0 +1,14 @@
+[
+  {
+    "name": "collectionSeizurePrivateDetails",
+    "policy": "OR('NcbMSP.member', 'PoliceMSP.member')",
+    "requiredPeerCount": 1,
+    "maxPeerCount": 2,
+    "blockToLive": 1000000,
+    "memberOnlyRead": true,
+    "memberOnlyWrite": true,
+    "endorsementPolicy": {
+      "signaturePolicy": "OR('NcbMSP.peer', 'PoliceMSP.peer')"
+    }
+  }
+]

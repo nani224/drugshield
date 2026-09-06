@@ -1,0 +1,111 @@
+{
+  "name": "drugshield-consortium",
+  "version": "1.0.0",
+  "client": {
+    "organization": "NcbOrg",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        },
+        "orderer": "300"
+      }
+    }
+  },
+  "channels": {
+    "seizures-channel": {
+      "orderers": [
+        "orderer.drugshield.gov.in"
+      ],
+      "peers": {
+        "peer0.ncb.gov.in": {
+          "endorsingPeer": true,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": true
+        },
+        "peer0.police.gov.in": {
+          "endorsingPeer": true,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": true
+        },
+        "peer0.cfsl.gov.in": {
+          "endorsingPeer": true,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": true
+        },
+        "peer0.judiciary.gov.in": {
+          "endorsingPeer": false,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": true
+        }
+      }
+    }
+  },
+  "organizations": {
+    "NcbOrg": {
+      "mspid": "NcbMSP",
+      "peers": [
+        "peer0.ncb.gov.in"
+      ],
+      "certificateAuthorities": [
+        "ca.ncb.gov.in"
+      ]
+    },
+    "PoliceOrg": {
+      "mspid": "PoliceMSP",
+      "peers": [
+        "peer0.police.gov.in"
+      ]
+    },
+    "CfslOrg": {
+      "mspid": "CfslMSP",
+      "peers": [
+        "peer0.cfsl.gov.in"
+      ]
+    },
+    "JudiciaryOrg": {
+      "mspid": "JudiciaryMSP",
+      "peers": [
+        "peer0.judiciary.gov.in"
+      ]
+    }
+  },
+  "orderers": {
+    "orderer.drugshield.gov.in": {
+      "url": "grpcs://localhost:7050",
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer.drugshield.gov.in"
+      }
+    }
+  },
+  "peers": {
+    "peer0.ncb.gov.in": {
+      "url": "grpcs://localhost:7051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.ncb.gov.in"
+      }
+    },
+    "peer0.police.gov.in": {
+      "url": "grpcs://localhost:8051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.police.gov.in"
+      }
+    },
+    "peer0.cfsl.gov.in": {
+      "url": "grpcs://localhost:9051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.cfsl.gov.in"
+      }
+    },
+    "peer0.judiciary.gov.in": {
+      "url": "grpcs://localhost:10051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.judiciary.gov.in"
+      }
+    }
+  }
+}
