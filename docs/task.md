@@ -27,15 +27,15 @@
 - [x] `ml/requirements.txt` — Python ML pipeline dependencies
 
 ## 🟢 Phase 1: Foundation & Camera Intelligence (Days 1–2)
-- [ ] 1.1 Install Flutter SDK, create Flutter project shell
-- [ ] 1.2 Build `native_opencv` FFI plugin (CMake + NDK + OpenCV C++ wrapper)
-- [ ] 1.3 CameraX live preview (60 FPS frame streaming)
-- [ ] 1.4 ArUco marker detection overlay (cyan HUD brackets)
-- [ ] 1.5 Homography perspective warp
-- [ ] 1.6 Macbeth CCM color correction (CIE L\*a\*b\*)
-- [ ] 1.7 Biometric login screen (fingerprint + Play Integrity)
-- [ ] 1.8 NDPS Section 50 checklist screen (witnesses + reagent selection)
-- [ ] 1.9 Apply Tactical HUD dark theme across all screens
+- [x] 1.1 Install Flutter SDK, create Flutter project shell
+- [x] 1.2 Build `native_opencv` FFI plugin (CMake + NDK + OpenCV C++ wrapper)
+- [x] 1.3 CameraX live preview (60 FPS frame streaming)
+- [x] 1.4 ArUco marker detection overlay (cyan HUD brackets)
+- [x] 1.5 Homography perspective warp
+- [x] 1.6 Macbeth CCM color correction (CIE L\*a\*b\*)
+- [x] 1.7 Biometric login screen (fingerprint + Play Integrity)
+- [x] 1.8 NDPS Section 50 checklist screen (witnesses + reagent selection)
+- [x] 1.9 Apply Tactical HUD dark theme across all screens
 
 ## 🟡 Phase 2: Edge AI Intelligence (Days 2–3)
 - [ ] 2.1 Curate colorimetric test image dataset (5 reagent classes)
