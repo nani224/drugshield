@@ -313,20 +313,16 @@ class CalibrationPreviewScreen extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         HapticFeedback.heavyImpact();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: DSColors.surfaceCarbon,
-                            content: Text(
-                              'Phase 1 complete! Calibrated CIE Lab: L*=${lab.L.toStringAsFixed(1)}, a*=${lab.a.toStringAsFixed(1)}, b*=${lab.b.toStringAsFixed(1)} (ΔE*=${lab.deltaE.toStringAsFixed(2)}) ready for Phase 2 LiteRT classifier.',
-                              style: DSTypography.body.copyWith(
-                                color: DSColors.accentEmerald,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                        );
+                        context.go('/ai-result', extra: calibrationResult);
                       },
-                      child: const Text('STAGE 2: READY FOR AI'),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.psychology, size: 20),
+                          SizedBox(width: 8),
+                          Text('STAGE 2: RUN AI INFERENCE'),
+                        ],
+                      ),
                     ),
                   ),
                 ],

@@ -38,14 +38,14 @@
 - [x] 1.9 Apply Tactical HUD dark theme across all screens
 
 ## 🟡 Phase 2: Edge AI Intelligence (Days 2–3)
-- [ ] 2.1 Curate colorimetric test image dataset (5 reagent classes)
-- [ ] 2.2 Augment dataset (brightness, contrast, rotation, noise)
-- [ ] 2.3 Convert all images to CIE L\*a\*b\*
-- [ ] 2.4 Transfer learning: MobileNetV3-Large fine-tuning
-- [ ] 2.5 INT8 quantization → `mobilenet_v3_int8.tflite`
-- [ ] 2.6 Integrate LiteRT into Flutter (on-device inference)
-- [ ] 2.7 AI Result Screen (Amber presumptive banner)
-- [ ] 2.8 Evidence Vault Screen (SHA-256 + QR + local save)
+- [x] 2.1 Curate colorimetric test image dataset (5 reagent classes)
+- [x] 2.2 Augment dataset (brightness, contrast, rotation, noise)
+- [x] 2.3 Convert all images to CIE L\*a\*b\*
+- [x] 2.4 Transfer learning: MobileNetV3-Large fine-tuning
+- [x] 2.5 INT8 quantization → `mobilenet_v3_int8.tflite`
+- [x] 2.6 Integrate LiteRT into Flutter (on-device inference)
+- [x] 2.7 AI Result Screen (Amber presumptive banner)
+- [x] 2.8 Evidence Vault Screen (SHA-256 + QR + local save)
 
 ## 🔴 Phase 3: Trust Layer — Blockchain & Backend (Days 3–4)
 - [ ] 3.1 Docker Desktop + WSL2 + Fabric Docker images
