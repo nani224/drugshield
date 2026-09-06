@@ -98,7 +98,14 @@ test: ## Run all tests across monorepo
 	melos run test
 	cd backend && go test ./...
 	cd chaincode && go test ./...
-	cd dashboard && pnpm test
+	python test/e2e_pipeline_test.py
+	python test/performance_benchmarks.py
+
+test-e2e: ## Run end-to-end 4-tier pipeline test
+	python test/e2e_pipeline_test.py
+
+test-benchmark: ## Run latency and throughput benchmarks
+	python test/performance_benchmarks.py
 
 # ---------------------------------------------------------------------------
 # Cleanup

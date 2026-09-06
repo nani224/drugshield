@@ -59,10 +59,10 @@
 - [x] 3.9 Set up PostGIS + TimescaleDB analytics DB
 
 ## 🔵 Phase 4: Command Portal & Demo (Days 4–5)
-- [ ] 4.1 Scaffold Next.js 15 + pnpm + Tailwind (dark slate theme)
-- [ ] 4.2 Executive Summary Dashboard (KPI cards)
-- [ ] 4.3 Deck.gl + MapLibre geospatial heatmap
-- [ ] 4.4 Courtroom Evidence Verification Portal
-- [ ] 4.5 End-to-end integration test
-- [ ] 4.6 Performance benchmarking
-- [ ] 4.7 SIH demo preparation
+- [x] 4.1 Scaffold Next.js 15 + pnpm + Tailwind (dark slate theme)
+- [x] 4.2 Executive Summary Dashboard (KPI cards)
+- [x] 4.3 Deck.gl + MapLibre geospatial heatmap
+- [x] 4.4 Courtroom Evidence Verification Portal
+- [x] 4.5 End-to-end integration test
+- [x] 4.6 Performance benchmarking
+- [x] 4.7 SIH demo preparation
