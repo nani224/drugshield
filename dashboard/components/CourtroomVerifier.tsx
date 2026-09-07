@@ -347,7 +347,7 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({
                 <br />
                 Block Height: #{verificationResult?.blockNumber}
                 <br />
-                Consensus Orderer: Raft BFT (4 Consortium Peers Signed)
+                Consensus Orderer: Raft CFT (4 Consortium Peers Signed)
               </p>
               <p>
                 The optical frame was subjected to Macbeth CCM homography calibration and classified with presumptive confidence under Section 50 protocol. The digital fingerprint has remained unaltered and cryptographically sealed on the distributed ledger.

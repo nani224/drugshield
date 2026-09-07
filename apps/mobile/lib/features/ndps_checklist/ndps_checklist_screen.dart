@@ -17,6 +17,7 @@ class NDPSChecklistScreen extends ConsumerStatefulWidget {
 class _NDPSChecklistScreenState extends ConsumerState<NDPSChecklistScreen> {
   late final TextEditingController _firController;
   late final TextEditingController _gdController;
+  late final TextEditingController _sealController;
 
   @override
   void initState() {
@@ -24,6 +25,7 @@ class _NDPSChecklistScreenState extends ConsumerState<NDPSChecklistScreen> {
     final state = ref.read(ndpsChecklistProvider);
     _firController = TextEditingController(text: state.firNumber);
     _gdController = TextEditingController(text: state.gdEntryNumber);
+    _sealController = TextEditingController(text: state.evidenceSealBarcode);
     _fetchLiveGps();
   }
 
@@ -31,6 +33,7 @@ class _NDPSChecklistScreenState extends ConsumerState<NDPSChecklistScreen> {
   void dispose() {
     _firController.dispose();
     _gdController.dispose();
+    _sealController.dispose();
     super.dispose();
   }
 
@@ -163,6 +166,17 @@ class _NDPSChecklistScreenState extends ConsumerState<NDPSChecklistScreen> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _sealController,
+                      style: DSTypography.mono.copyWith(fontSize: 15),
+                      decoration: const InputDecoration(
+                        labelText: 'Evidence Bag Pre-Printed Seal Barcode',
+                        prefixIcon: Icon(Icons.qr_code_scanner, color: DSColors.hudCyan, size: 18),
+                        hintText: 'e.g. NCB-SEAL-2026-0842',
+                      ),
+                      onChanged: (v) => ref.read(ndpsChecklistProvider.notifier).setEvidenceSealBarcode(v),
                     ),
                     const SizedBox(height: 16),
 

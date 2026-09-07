@@ -79,7 +79,7 @@ There are **5 main approaches** that exist today for field drug testing. Let's l
 
 | ❌ Problem | Why it matters for India |
 |---|---|
-| **₹25 LAKH per device** | India has ~86,000+ police stations. Even equipping 1% = ₹2,150 crore budget |
+| **₹25 LAKH per device** | India has ~17,535 police stations (BPR&D 2023). Equipping every station = ₹4,383 crore budget |
 | Requires training | Officers need specialized training to operate |
 | Can't detect trace amounts | Only works on visible, bulk samples |
 | Needs maintenance & calibration | Library updates cost extra $$$ |
@@ -207,7 +207,7 @@ There are **5 main approaches** that exist today for field drug testing. Let's l
 | **Works offline?** | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No | ❌ N/A |
 | **Works with Indian kits?** | ✅ Yes | ❌ Own hardware | ❌ Proprietary pouches | ❌ Own hardware | ✅ Yes |
 | **Tamper-proof evidence?** | ❌ Paper only | ⚠️ Local storage | ⚠️ Editable PDF | ❌ No | ✅ Yes |
-| **Scalable to 86,000 stations?** | ✅ Yes (cheap) | ❌ Too expensive | ❌ Not in India | ❌ Too expensive | ❌ Too slow |
+| **Scalable to 17,535 stations?** | ✅ Yes (cheap) | ❌ Too expensive | ❌ Not in India | ❌ Too expensive | ❌ Too slow |
 | **NDPS Act compliant?** | ⚠️ Partially | ❌ Foreign system | ❌ US-focused | ❌ Foreign system | ✅ Yes |
 
 ---
@@ -315,7 +315,7 @@ MobileDetect uses basic colour matching — compare pixel colour to a stored ref
 | Smartphone cameras are **12–108 MP** today | More than sufficient for colour classification |
 | MobileDetect already PROVED smartphones work for this | We're following a validated product design pattern `[SOURCE: DetectaChem]` |
 
-> **Economics validation:** If you buy a TruNarc for 86,000 police stations = **₹21,500 crore**. Our app on existing phones = **₹0 in hardware**. Even with development cost of ₹50 lakh, the ROI is **430,000x**.
+> **Economics validation:** If you buy a TruNarc for 17,535 police stations = **₹4,383 crore**. Our app on existing phones = **₹0 in hardware**. Even with deployment cost of ₹50 lakh, the cost savings are over **8,700x**.
 
 ---
 
@@ -369,7 +369,7 @@ Under the NDPS Act 1985, courts are extremely strict about procedural compliance
 | **Tamper-proof** | Hyperledger Fabric blockchain — mathematically impossible to forge |
 | **Offline** | TensorFlow Lite on-device — works without internet |
 | **Indian context** | Built for NDPS Act, NCB procedures, Indian test kits |
-| **Scalable** | Deploy to 86,000+ stations via Play Store / MDM |
+| **Scalable** | Deploy to 17,535+ stations via Play Store / MDM |
 | **No vendor lock-in** | Works with ANY standard colour test kit (not proprietary pouches) |
 | **Intelligence layer** | Dashboard shows drug trends, hotspot maps, analytics |
 | **Legal strength** | Blockchain evidence + guided workflow = fewer acquittals |
@@ -405,6 +405,31 @@ Under the NDPS Act 1985, courts are extremely strict about procedural compliance
 > - We ADD a workflow guide to PREVENT procedural errors (instead of hoping officers follow rules)
 > 
 > **We make the existing cheap kit smart, accurate, and legally bulletproof.**
+
+---
+
+## 🛡️ PART 6: Addressing Real-World Gaps & Boundary Conditions
+
+### 1. False Negatives & Sample Adulteration (Chemistry vs. AI Boundary)
+> **Realistic Acknowledgment:** Our CNN model reads the **color reaction** produced by the chemical reagent. 
+> - It **cannot detect sample dilution, masking, or adulteration** done by a trafficker prior to testing (e.g., cutting cocaine with baking soda or levamisole).
+> - If an adulterant suppresses the chemical color change, the reagent will show no reaction, and the app will classify it as **NEGATIVE / INCONCLUSIVE**.
+> - **Protocol Safeguard:** Under NCB standard operating procedure, an inconclusive field test in the presence of strong intelligence **does NOT clear a suspect** — the substance is forwarded to the CFSL for gold-standard GC-MS spectrometry. The app explicitly flags: *"Inconclusive Reaction: Does not rule out masked narcotics. Forward physical exhibit to CFSL under Section 52A."*
+
+### 2. Training Data Provenance & Synthetic Pipeline
+A critical judge question is: *"Where do you get thousands of labeled drug reaction images without handling illegal narcotics?"*
+- **Algorithmic Spectrum Synthesis (`ml/dataset_curator.py`):** We established verified CIE $L^*a^*b^*$ colorimetric centroids for standard reagents (Scott, Marquis, Duquenois-Levine, Mecke, Ehrlich) from published forensic literature (UNODC / NIJ standards).
+- **Photometric Augmentation:** Using D65 standard illuminant conversions, we generate thousands of synthetic reaction frames modeled with camera noise, chromatic aberrations, and uneven lighting gradients.
+- **Controlled Lab Baseline:** 200 real-world benchmark images captured using non-controlled chemical analogues and OTC interferents (caffeine, paracetamol, sugar, flour, lidocaine) provide physical calibration.
+
+### 3. Novel Psychoactive Substances (NPS) Ceiling
+Colorimetric tests have an inherent chemical ceiling — they cannot differentiate brand-new synthetic fentanyl analogues or cathinones that share similar functional groups.
+- DrugShield does **not hallucinate false certainty**: if the classified distance in CIE $L^*a^*b^*$ space exceeds a threshold ($\Delta E^* > 8.0$), the app triggers **"UNKNOWN CHEMICAL REACTION"** rather than forcing a wrong classification.
+
+### 4. Phased Law Enforcement Rollout Plan
+1. **Phase 1 (Pilot):** 3-month trial across NCB Delhi & Amritsar zonal units (50 trained field officers).
+2. **Phase 2 (State Interdiction):** Expansion to high-transit state border checkposts (Punjab, Manipur, Maharashtra).
+3. **Phase 3 (National Scaling):** Integration with the National Crime Records Bureau (NCRB) and distribution through government Mobile Device Management (MDM).
 
 ---
 

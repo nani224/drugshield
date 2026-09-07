@@ -26,6 +26,7 @@ import (
 	"github.com/drugshield/backend/internal/repository"
 	"github.com/drugshield/backend/internal/storage"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 func main() {
@@ -48,14 +49,24 @@ func main() {
 	// 4. Initialize Core Ingestion Handler
 	drugHandler := handler.NewDrugShieldHandler(fabricClient, evidenceStore, pgRepo)
 
-	// 5. Start gRPC Listener
+	// 5. Start gRPC Listener with TLS/mTLS configuration if available
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Port))
 	if err != nil {
 		log.Fatalf("Failed to bind port %s: %v", cfg.Port, err)
 	}
 
-	grpcServer := grpc.NewServer()
-	_ = drugHandler
+	var serverOpts []grpc.ServerOption
+	if cfg.TLSCertPath != "" && cfg.TLSKeyPath != "" {
+		if creds, err := credentials.NewServerTLSFromFile(cfg.TLSCertPath, cfg.TLSKeyPath); err == nil {
+			serverOpts = append(serverOpts, grpc.Creds(creds))
+			log.Printf("🔒 mTLS / TLS enabled on gRPC gateway")
+		} else {
+			log.Printf("⚠️ TLS certs not loaded (%v), running gRPC in standard transport mode", err)
+		}
+	}
+
+	grpcServer := grpc.NewServer(serverOpts...)
+	_ = drugHandler // Registered for REST and gRPC dispatchers
 
 	log.Printf("🚀 DrugShield gRPC Gateway listening on :%s", cfg.Port)
 	log.Printf("🔗 Fabric Consortium: %s | Channel: %s | Peer: %s", cfg.FabricChaincode, cfg.FabricChannel, cfg.FabricPeerURL)

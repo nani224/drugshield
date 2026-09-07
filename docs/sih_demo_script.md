@@ -86,7 +86,7 @@
 ### Q3: "Why use Hyperledger Fabric instead of a public blockchain like Ethereum or Polygon?"
 > **Answer:** "Public blockchains are legally and operationally unsuitable for national defense:
 > 1. **Data Privacy (Section 52 NDPS Act):** Narcotics seizures involve confidential informants, undercover officers, and sensitive ongoing operations. Hyperledger Fabric's **Private Data Collections (PDC)** ensure only authorized consortium peers (NCB, State Police, CFSL) can read sensitive metadata, while public peers only see the cryptographic commitment hash.
-> 2. **Deterministic Finality:** Raft BFT ordering provides instantaneous, final block commit without forks or mining delays.
+> 2. **Deterministic Finality:** Raft CFT ordering provides instantaneous, final block commit without forks or mining delays.
 > 3. **Zero Gas Fees & Zero Volatility:** Government agencies cannot budget for fluctuating cryptocurrency gas fees."
 
 ### Q4: "Presumptive color tests are notoriously prone to false positives (e.g. soap or lidocaine reacting like cocaine). How does your AI handle this?"

@@ -7,7 +7,7 @@
 #   2. State Police (Field Interdiction)    - Peer0 (Port 8051)
 #   3. CFSL (Forensic Science Laboratories) - Peer0 (Port 9051)
 #   4. Judiciary / eCourts (Audit Node)     - Peer0 (Port 10051)
-#   5. Raft BFT Ordering Service            - Orderer (Port 7050)
+#   5. Raft CFT Ordering Service            - Orderer (Port 7050)
 ##############################################################################
 
 version: '3.8'
@@ -19,7 +19,7 @@ networks:
 services:
 
   # --------------------------------------------------------------------------
-  # Raft BFT Ordering Node
+  # Raft CFT Ordering Node
   # --------------------------------------------------------------------------
   orderer.drugshield.gov.in:
     image: hyperledger/fabric-orderer:2.5

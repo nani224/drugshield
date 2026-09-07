@@ -165,17 +165,17 @@ class _CameraHudScreenState extends ConsumerState<CameraHudScreen>
                           width: 10,
                           height: 10,
                           decoration: const BoxDecoration(
-                            color: DSColors.accentCrimson,
+                            color: DSColors.hudCyan,
                             shape: BoxShape.circle,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'REC 1080p60',
+                          'OPTICAL HUD • 60 FPS',
                           style: DSTypography.mono.copyWith(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: DSColors.textPrimary,
+                            color: DSColors.hudCyan,
                           ),
                         ),
                       ],

@@ -98,6 +98,7 @@ class NdpsChecklistState {
   final PanchWitness witness1;
   final PanchWitness witness2;
   final ReagentType selectedReagent;
+  final String evidenceSealBarcode;
   final bool isLocatingGps;
 
   const NdpsChecklistState({
@@ -111,6 +112,7 @@ class NdpsChecklistState {
     required this.witness1,
     required this.witness2,
     required this.selectedReagent,
+    this.evidenceSealBarcode = 'NCB-SEAL-2026-0842',
     this.isLocatingGps = false,
   });
 
@@ -132,6 +134,7 @@ class NdpsChecklistState {
         witness1: const PanchWitness(name: 'Ramesh Kumar', idNumber: 'AADHAAR-8912-XXXX'),
         witness2: const PanchWitness(name: 'Suresh Patel', idNumber: 'AADHAAR-4401-XXXX'),
         selectedReagent: ReagentType.scott,
+        evidenceSealBarcode: 'NCB-SEAL-2026-0842',
       );
 
   NdpsChecklistState copyWith({
@@ -145,6 +148,7 @@ class NdpsChecklistState {
     PanchWitness? witness1,
     PanchWitness? witness2,
     ReagentType? selectedReagent,
+    String? evidenceSealBarcode,
     bool? isLocatingGps,
   }) {
     return NdpsChecklistState(
@@ -158,6 +162,7 @@ class NdpsChecklistState {
       witness1: witness1 ?? this.witness1,
       witness2: witness2 ?? this.witness2,
       selectedReagent: selectedReagent ?? this.selectedReagent,
+      evidenceSealBarcode: evidenceSealBarcode ?? this.evidenceSealBarcode,
       isLocatingGps: isLocatingGps ?? this.isLocatingGps,
     );
   }
@@ -168,6 +173,7 @@ class NdpsChecklistNotifier extends StateNotifier<NdpsChecklistState> {
 
   void setFirNumber(String val) => state = state.copyWith(firNumber: val);
   void setGdEntry(String val) => state = state.copyWith(gdEntryNumber: val);
+  void setEvidenceSealBarcode(String val) => state = state.copyWith(evidenceSealBarcode: val);
   void toggleSection50(bool val) => state = state.copyWith(isSection50Informed: val);
   void selectReagent(ReagentType reagent) => state = state.copyWith(selectedReagent: reagent);
 

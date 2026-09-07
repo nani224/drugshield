@@ -24,7 +24,7 @@
 │   │                         ECDSA secp256r1 Signing                   │                     │   │
 │   │                                                                   ▼                     │   │
 │   │                                                      [SQLCipher Encrypted Local DB]     │   │
-│   │                                                      (Offline Queue + Watermelon sync)  │   │
+│   │                                                      (Offline Queue + SQLCipher sync)   │   │
 │   └───────────────────────────────────────────────────────────────────┬─────────────────────┘   │
 └───────────────────────────────────────────────────────────────────────┼─────────────────────────┘
                                                                         │
@@ -46,7 +46,7 @@
 ┌───────────────────────────────────────────────┐  ┌──────────────────────────────────────────────┐
 │           OFF-CHAIN EVIDENCE STORAGE          │  │       CONSORTIUM BLOCKCHAIN NETWORK          │
 │                                               │  │                                              │
-│  [Private IPFS Cluster / MinIO Object Store]  │  │  [Hyperledger Fabric 3.0 (Raft BFT)]         │
+│  [Private IPFS Cluster / MinIO Object Store]  │  │  [Hyperledger Fabric 3.0 (Raft CFT)]         │
 │  ├── Content Addressable Storage (CID)        │  │  ├── Peer Nodes: NCB, State Police, CFSL,    │
 │  ├── AES-256-GCM Encrypted Evidence Blobs     │  │  │               High Court Registry         │
 │  └── SHA-256 Verification Checksums           │  │  ├── Private Data Collections (PDC)          │
@@ -160,7 +160,7 @@ Field testing happens under streetlights, halogen lamps, night vehicle headlight
 ### Chosen Technologies:
 - **Hardware Cryptography:** Android KeyStore Provider (StrongBox / TEE) & iOS Secure Enclave
 - **Local Storage:** SQLCipher (256-bit AES Full-Database Encryption)
-- **Offline Sync Engine:** WatermelonDB / SQLite reactive queue with CRDT-inspired conflict resolution
+- **Offline Sync Engine:** Drift ORM + SQLCipher AES-256 encrypted database with queue-and-sync conflict resolution
 
 ### 🔬 How Non-Repudiation is Guaranteed in Field Raids:
 Under the **Indian Evidence Act & Bharatiya Sakshya Adhiniyam, 2023**, electronic evidence must prove it could not have been tampered with between seizure and courtroom submission.
@@ -280,7 +280,7 @@ Hyperledger Fabric is written natively in Go. The official `fabric-gateway` v1.x
 │ ML Backbone              │ MobileNetV3-Large / ConvNeXt-Nano   │ NAS-optimized for NPU │
 │ Mobile Security          │ Android StrongBox TEE / Apple SE    │ Non-extractable ECDSA │
 │ Mobile Encrypted DB      │ SQLCipher (AES-256)                 │ Encrypted offline sync│
-│ Blockchain Network       │ Hyperledger Fabric 3.0 (Raft BFT)   │ Zero gas, 3500+ TPS   │
+│ Blockchain Network       │ Hyperledger Fabric 3.0 (Raft CFT)   │ Zero gas, 3500+ TPS   │
 │ Smart Contracts          │ Golang Chaincode                    │ Native Fabric runtime │
 │ Off-Chain Storage        │ Private IPFS Cluster + MinIO        │ Content addressing CID│
 │ Backend Microservices    │ Golang 1.23+ / Gin / gRPC           │ High throughput, SDK  │

@@ -155,7 +155,7 @@ def test_tier_4_fabric_and_courtroom_audit(substance, confidence, frame_hash, si
         }
     }
 
-    print(f"[*] Fabric 3.0 Raft BFT Ordering: Block #{block_number} Committed")
+    print(f"[*] Fabric 3.0 Raft CFT Ordering: Block #{block_number} Committed")
     print(f"[*] Channel: {fabric_ledger_record['channel_id']}")
     print(f"[*] Transaction ID: {tx_id}")
 
