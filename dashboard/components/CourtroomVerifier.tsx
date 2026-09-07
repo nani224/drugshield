@@ -120,11 +120,11 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <section className="rounded-xl border border-surfaceBorder bg-carbon p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-mono text-xs tracking-wider text-white flex items-center gap-2">
+            <h3 className="font-mono text-xs tracking-wider text-textMain flex items-center gap-2">
               <Scale className="w-4 h-4 text-tacticalCyan" />
               SECTION 50 NDPS PROCEDURAL COMPLIANCE
             </h3>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-tacticalEmerald/10 border border-tacticalEmerald/30 text-tacticalEmerald">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-tacticalEmerald/10 border border-tacticalEmerald/30 text-tacticalEmerald font-bold">
               SEC. 65B IEA / SEC. 63 BSA
             </span>
           </div>
@@ -132,7 +132,7 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
             <div className="space-y-3">
               {checks.map((c) => (
                 <div key={c.label} className="flex items-center justify-between rounded-lg border border-surfaceBorder bg-abyssal/50 px-3 py-2.5">
-                  <span className="text-sm text-gray-200">{c.label}</span>
+                  <span className="text-sm text-textSecondary font-medium">{c.label}</span>
                   <span
                     className={`text-[10px] font-mono font-bold px-2 py-1 rounded border ${
                       c.ok
@@ -151,14 +151,14 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
         </section>
 
         <section className="rounded-xl border border-surfaceBorder bg-carbon p-6 space-y-3">
-          <h3 className="font-mono text-xs tracking-wider text-white">LIVE MERKLE PROOF VERIFIER</h3>
+          <h3 className="font-mono text-xs tracking-wider text-textMain">LIVE MERKLE PROOF VERIFIER</h3>
           <p className="text-xs text-textMuted font-mono">
             Paste a transaction ID or drug SHA-256 hash to simulate peer signature and block-inclusion audit.
           </p>
           <div className="flex items-center justify-between text-[11px] font-mono">
-            <span className="text-gray-300">SHA-256 / TX ID</span>
+            <span className="text-textSecondary">SHA-256 / TX ID</span>
             {inputHash && (
-              <button onClick={handleCopyHash} className="text-tacticalCyan flex items-center gap-1">
+              <button onClick={handleCopyHash} className="text-tacticalCyan flex items-center gap-1 font-semibold">
                 <Copy className="w-3 h-3" />
                 {copied ? "COPIED" : "COPY"}
               </button>
@@ -169,17 +169,17 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
             value={inputHash}
             onChange={(e) => setInputHash(e.target.value)}
             placeholder="64-character SHA-256 or Fabric Tx ID…"
-            className="w-full bg-abyssal border border-surfaceBorder rounded p-2 text-xs font-mono text-white placeholder-textMuted focus:outline-none focus:border-tacticalCyan resize-none"
+            className="w-full bg-abyssal border border-surfaceBorder rounded p-2 text-xs font-mono text-textMain placeholder-textMuted focus:outline-none focus:border-tacticalCyan resize-none"
           />
           <label className="border border-dashed border-surfaceBorder hover:border-tacticalCyan rounded-lg p-3 flex flex-col items-center cursor-pointer bg-abyssal/40">
             <FileText className="w-5 h-5 text-textMuted mb-1" />
-            <span className="text-[11px] font-mono text-gray-300">Drop photo / JSON manifest — on-device SHA-256</span>
+            <span className="text-[11px] font-mono text-textSecondary">Drop photo / JSON manifest — on-device SHA-256</span>
             <input type="file" onChange={handleFileUpload} className="hidden" />
           </label>
           <button
             onClick={() => handleVerify()}
             disabled={isVerifying || !inputHash.trim()}
-            className="w-full bg-tacticalCyan hover:bg-cyan-400 disabled:opacity-50 text-black font-bold text-xs font-mono py-2.5 px-4 rounded flex items-center justify-center gap-2"
+            className="w-full bg-tacticalCyan hover:opacity-90 disabled:opacity-50 text-white dark:text-black font-bold text-xs font-mono py-2.5 px-4 rounded flex items-center justify-center gap-2 transition-opacity"
           >
             {isVerifying ? (
               <>
@@ -198,28 +198,28 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
             <div
               className={`border rounded-lg p-4 space-y-2 text-xs font-mono ${
                 verificationResult.verified
-                  ? "bg-emerald-950/20 border-tacticalEmerald"
-                  : "bg-red-950/20 border-tacticalCrimson"
+                  ? "bg-tacticalEmerald/10 border-tacticalEmerald/50 text-textMain"
+                  : "bg-tacticalCrimson/10 border-tacticalCrimson/50 text-textMain"
               }`}
             >
               <div className="flex items-center gap-2">
                 {verificationResult.verified ? (
-                  <CheckCircle2 className="w-5 h-5 text-tacticalEmerald" />
+                  <CheckCircle2 className="w-5 h-5 text-tacticalEmerald shrink-0" />
                 ) : (
-                  <AlertOctagon className="w-5 h-5 text-tacticalCrimson" />
+                  <AlertOctagon className="w-5 h-5 text-tacticalCrimson shrink-0" />
                 )}
                 <span className={verificationResult.verified ? "text-tacticalEmerald font-bold" : "text-tacticalCrimson font-bold"}>
                   {verificationResult.verified ? "MERKLE INCLUSION CONFIRMED" : "TAMPER ALERT: HASH MISMATCH"}
                 </span>
               </div>
-              <div className="text-textMuted">Tx: <span className="text-white break-all">{verificationResult.txId}</span></div>
-              <div className="text-textMuted">Block: <span className="text-tacticalCyan">#{verificationResult.blockNumber}</span></div>
-              <div className="text-textMuted">Signer: <span className="text-tacticalAmber">{verificationResult.signer}</span></div>
-              <p className="text-gray-400">{verificationResult.notes}</p>
+              <div className="text-textMuted">Tx: <span className="text-textMain break-all font-semibold">{verificationResult.txId}</span></div>
+              <div className="text-textMuted">Block: <span className="text-tacticalCyan font-bold">#{verificationResult.blockNumber}</span></div>
+              <div className="text-textMuted">Signer: <span className="text-tacticalAmber font-semibold">{verificationResult.signer}</span></div>
+              <p className="text-textSecondary">{verificationResult.notes}</p>
               {verificationResult.verified && (
                 <button
                   onClick={() => setShowCertModal(true)}
-                  className="w-full mt-2 bg-carbon border border-tacticalEmerald text-tacticalEmerald font-mono font-bold py-2 rounded flex items-center justify-center gap-2"
+                  className="w-full mt-2 bg-carbon border border-tacticalEmerald text-tacticalEmerald font-mono font-bold py-2 rounded flex items-center justify-center gap-2 hover:bg-tacticalEmerald/10 transition-colors"
                 >
                   <FileCheck className="w-3.5 h-3.5" />
                   GENERATE SECTION 65B CERTIFICATE
@@ -241,19 +241,19 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-[1fr_120px] gap-6">
-          <div className="text-sm text-gray-300 space-y-3 leading-relaxed">
-            <p className="font-bold text-tacticalCyan">IN THE COURT OF THE SPECIAL JUDGE (NDPS ACT)</p>
+          <div className="text-sm text-textSecondary space-y-3 leading-relaxed font-sans">
+            <p className="font-bold text-tacticalCyan font-mono">IN THE COURT OF THE SPECIAL JUDGE (NDPS ACT)</p>
             <p>
-              Case Ref: {selectedSeizure?.firNumber ?? "—"} · Evidence ID: {selectedSeizure?.id ?? "—"}
+              Case Ref: <span className="text-textMain font-semibold font-mono">{selectedSeizure?.firNumber ?? "—"}</span> · Evidence ID: <span className="text-textMain font-semibold font-mono">{selectedSeizure?.id ?? "—"}</span>
               <br />
-              Capture: {selectedSeizure?.timestamp ?? "—"}
+              Capture: <span className="text-textMain font-mono">{selectedSeizure?.timestamp ?? "—"}</span>
             </p>
             <p>
               Certified that the electronic record was captured on authorized FIPS 140-2 Level 3 StrongBox hardware
               and sealed on Hyperledger Fabric 3.0 (channel nnsin-custody). SHA-256 stamp below is the tamper-evident
               fingerprint of the colorimetric frame and custody JSON.
             </p>
-            <p className="font-mono text-[11px] bg-abyssal border border-surfaceBorder rounded p-3 break-all">
+            <p className="font-mono text-[11px] bg-abyssal border border-surfaceBorder rounded p-3 break-all text-textMain">
               SHA-256: {selectedSeizure?.sha256Hash ?? "—"}
               <br />
               Fabric Tx: {selectedSeizure?.fabricTxId ?? "—"}
@@ -262,7 +262,7 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
             </p>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <div className="w-[104px] h-[104px] grid grid-cols-5 grid-rows-5 gap-0.5 bg-white p-1">
+            <div className="w-[104px] h-[104px] grid grid-cols-5 grid-rows-5 gap-0.5 bg-white p-1 border border-surfaceBorder shadow-sm">
               {Array.from({ length: 25 }).map((_, i) => (
                 <div
                   key={i}
@@ -270,21 +270,21 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
                 />
               ))}
             </div>
-            <span className="text-[9px] font-mono text-textMuted">QR · LEDGER STAMP</span>
+            <span className="text-[9px] font-mono text-textMuted font-semibold">QR · LEDGER STAMP</span>
           </div>
         </div>
       </section>
 
       {showCertModal && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-carbon border border-tacticalCyan rounded-lg max-w-xl w-full p-6 space-y-4 font-mono">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-carbon border border-tacticalCyan rounded-lg max-w-xl w-full p-6 space-y-4 font-mono shadow-2xl text-textMain">
             <div className="flex items-center justify-between border-b border-surfaceBorder pb-3">
-              <span className="font-bold text-sm">SECTION 65B CERTIFICATE</span>
-              <button onClick={() => setShowCertModal(false)} className="text-xs px-2 py-1 rounded bg-surfaceBorder">
+              <span className="font-bold text-sm text-textMain">SECTION 65B CERTIFICATE</span>
+              <button onClick={() => setShowCertModal(false)} className="text-xs px-2 py-1 rounded bg-abyssal border border-surfaceBorder text-textSecondary">
                 ESC
               </button>
             </div>
-            <p className="text-xs text-gray-300 leading-relaxed">
+            <p className="text-xs text-textSecondary leading-relaxed font-sans">
               Official memorandum for {selectedSeizure?.firNumber}. Hash {inputHash.slice(0, 16)}… is ready for
               judicial submission with Raft CFT (4 consortium peers).
             </p>
@@ -292,7 +292,7 @@ export const CourtroomVerifier: React.FC<CourtroomVerifierProps> = ({ selectedSe
               onClick={() => {
                 setShowCertModal(false);
               }}
-              className="px-4 py-2 rounded bg-tacticalEmerald text-black font-bold text-xs flex items-center gap-1.5"
+              className="px-4 py-2 rounded bg-tacticalEmerald text-white dark:text-black font-bold text-xs flex items-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
               Export Official Memorandum

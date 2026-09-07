@@ -4,14 +4,83 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root,
+.light {
+  /* Light Mode Tokens (Enterprise Security & Data-Dense Dashboard) */
+  --bg-slate: #F4F6F9;
+  --bg-slate-rgb: 244 246 249;
+
+  --surface-carbon: #FFFFFF;
+  --surface-carbon-rgb: 255 255 255;
+
+  --surface-border: #CBD5E1;
+  --surface-border-rgb: 203 213 225;
+
+  --surface-abyssal: #E2E8F0;
+  --surface-abyssal-rgb: 226 232 240;
+
+  --text-main: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+
+  /* Accessible high-contrast accents for light mode (WCAG AAA >= 7:1 or AA >= 4.5:1) */
+  --tactical-cyan: #0284C7;
+  --tactical-cyan-rgb: 2 132 199;
+
+  --tactical-emerald: #059669;
+  --tactical-emerald-rgb: 5 150 105;
+
+  --tactical-amber: #D97706;
+  --tactical-amber-rgb: 217 119 6;
+
+  --tactical-crimson: #DC2626;
+  --tactical-crimson-rgb: 220 38 38;
+
+  --tactical-violet: #7C3AED;
+  --tactical-violet-rgb: 124 58 237;
+
+  --map-polygon-fill: #E2E8F0;
+  --map-polygon-stroke: #94A3B8;
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+}
+
+.dark {
+  /* Dark Mode Tokens (Cyber Defense Dark / Tactical Abyssal) */
   --bg-slate: #0B0F17;
+  --bg-slate-rgb: 11 15 23;
+
   --surface-carbon: #121721;
+  --surface-carbon-rgb: 18 23 33;
+
   --surface-border: #1E293B;
+  --surface-border-rgb: 30 41 59;
+
+  --surface-abyssal: #05070A;
+  --surface-abyssal-rgb: 5 7 10;
+
+  --text-main: #FFFFFF;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+
+  /* Glowing neon accents on dark surfaces */
   --tactical-cyan: #00F0FF;
+  --tactical-cyan-rgb: 0 240 255;
+
   --tactical-emerald: #00E676;
+  --tactical-emerald-rgb: 0 230 118;
+
   --tactical-amber: #FFB300;
+  --tactical-amber-rgb: 255 179 0;
+
   --tactical-crimson: #FF1744;
+  --tactical-crimson-rgb: 255 23 68;
+
+  --tactical-violet: #A855F7;
+  --tactical-violet-rgb: 168 85 247;
+
+  --map-polygon-fill: #0E1626;
+  --map-polygon-stroke: #1E293B;
+  --card-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -20,7 +89,7 @@
 
 body {
   background-color: var(--bg-slate);
-  color: #FFFFFF;
+  color: var(--text-main);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   margin: 0;
@@ -30,8 +99,8 @@ body {
 /* Tactical grid background */
 .tactical-grid {
   background-image: 
-    linear-gradient(to right, rgba(30, 41, 59, 0.35) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 41, 59, 0.35) 1px, transparent 1px);
+    linear-gradient(to right, rgba(var(--surface-border-rgb) / 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--surface-border-rgb) / 0.45) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -42,16 +111,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0F17;
+  background: var(--bg-slate);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: var(--surface-border);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00F0FF;
+  background: var(--tactical-cyan);
 }
 
 /* Monospace font utility */
@@ -61,13 +130,13 @@ body {
 
 /* Glowing border effect */
 .border-glow-cyan {
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15), inset 0 0 15px rgba(0, 240, 255, 0.05);
+  box-shadow: 0 0 15px rgba(var(--tactical-cyan-rgb) / 0.2), inset 0 0 15px rgba(var(--tactical-cyan-rgb) / 0.05);
 }
 
 .border-glow-emerald {
-  box-shadow: 0 0 15px rgba(0, 230, 118, 0.15), inset 0 0 15px rgba(0, 230, 118, 0.05);
+  box-shadow: 0 0 15px rgba(var(--tactical-emerald-rgb) / 0.2), inset 0 0 15px rgba(var(--tactical-emerald-rgb) / 0.05);
 }
 
 .border-glow-amber {
-  box-shadow: 0 0 15px rgba(255, 179, 0, 0.15), inset 0 0 15px rgba(255, 179, 0, 0.05);
+  box-shadow: 0 0 15px rgba(var(--tactical-amber-rgb) / 0.2), inset 0 0 15px rgba(var(--tactical-amber-rgb) / 0.05);
 }

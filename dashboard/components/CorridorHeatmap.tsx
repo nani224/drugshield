@@ -132,8 +132,8 @@ export const CorridorHeatmap: React.FC<CorridorHeatmapProps> = ({
               530,490 490,570 430,680 390,790 350,810 320,760 300,680 
               240,550 200,480 180,410 140,360 160,280 180,210 220,150
             "
-            fill="#0E1626"
-            stroke="#1E293B"
+            fill="var(--map-polygon-fill)"
+            stroke="var(--map-polygon-stroke)"
             strokeWidth="2.5"
             strokeDasharray="4 2"
           />
@@ -249,14 +249,14 @@ export const CorridorHeatmap: React.FC<CorridorHeatmapProps> = ({
                     width={node.name.length * 7 + 16}
                     height="18"
                     rx="3"
-                    fill="#0B0F17"
-                    stroke={isSelected ? "#00F0FF" : "#1E293B"}
+                    fill="var(--surface-carbon)"
+                    stroke={isSelected ? "var(--tactical-cyan)" : "var(--surface-border)"}
                     strokeWidth="1"
                   />
                   <text
                     x={x + 15}
                     y={y + 1}
-                    fill={isSelected ? "#00F0FF" : "#FFFFFF"}
+                    fill={isSelected ? "var(--tactical-cyan)" : "var(--text-main)"}
                     fontSize="9.5"
                     fontFamily="JetBrains Mono"
                     fontWeight="600"
@@ -395,7 +395,7 @@ export const CorridorHeatmap: React.FC<CorridorHeatmapProps> = ({
             <div className="flex items-center justify-between gap-2 border-b border-surfaceBorder pb-1.5 mb-2">
               <div className="flex items-center gap-1.5">
                 <Shield className="w-3.5 h-3.5 text-tacticalCyan" />
-                <span className="font-bold text-white text-xs">{activeNode.name}</span>
+                <span className="font-bold text-textMain text-xs">{activeNode.name}</span>
               </div>
               <span
                 className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${
@@ -408,10 +408,10 @@ export const CorridorHeatmap: React.FC<CorridorHeatmapProps> = ({
               </span>
             </div>
 
-            <div className="space-y-1 text-gray-300 text-[10.5px]">
+            <div className="space-y-1 text-textSecondary text-[10.5px]">
               <div className="flex justify-between">
                 <span className="text-textMuted">State / Jurisdiction:</span>
-                <span className="font-semibold text-white">{activeNode.state}</span>
+                <span className="font-semibold text-textMain">{activeNode.state}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-textMuted">Primary Contraband:</span>

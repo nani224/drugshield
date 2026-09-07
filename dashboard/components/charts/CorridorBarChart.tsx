@@ -13,20 +13,27 @@ export function CorridorBarChart() {
           data={CORRIDOR_PERFORMANCE}
           margin={{ top: 8, right: 16, left: 8, bottom: 0 }}
         >
-          <CartesianGrid stroke="#1E293B" strokeDasharray="3 3" />
-          <XAxis type="number" stroke="#94A3B8" tick={{ fontSize: 11 }} unit="%" />
+          <CartesianGrid stroke="var(--surface-border)" strokeDasharray="3 3" />
+          <XAxis type="number" stroke="var(--text-muted)" tick={{ fontSize: 11, fill: "var(--text-muted)" }} unit="%" />
           <YAxis
             type="category"
             dataKey="name"
             width={168}
-            stroke="#94A3B8"
-            tick={{ fontSize: 10 }}
+            stroke="var(--text-muted)"
+            tick={{ fontSize: 10, fill: "var(--text-secondary)" }}
           />
           <Tooltip
             formatter={(value) => [`${value}% interdiction`, "Rate"]}
-            contentStyle={{ background: "#121721", border: "1px solid #1E293B", fontSize: 12 }}
+            contentStyle={{
+              background: "var(--surface-carbon)",
+              border: "1px solid var(--surface-border)",
+              borderRadius: "8px",
+              color: "var(--text-main)",
+              fontSize: 12,
+              boxShadow: "var(--card-shadow)",
+            }}
           />
-          <Bar dataKey="interdictionRate" fill="#00F0FF" radius={[0, 4, 4, 0]} />
+          <Bar dataKey="interdictionRate" fill="var(--tactical-cyan)" radius={[0, 4, 4, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

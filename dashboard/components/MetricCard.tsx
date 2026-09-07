@@ -18,20 +18,20 @@ const ACCENT = {
   cyan: {
     text: "text-tacticalCyan",
     border: "border-tacticalCyan/30",
-    glow: "shadow-[0_0_24px_rgba(0,240,255,0.08)]",
-    stroke: "#00F0FF",
+    glow: "shadow-[0_0_24px_rgba(var(--tactical-cyan-rgb)/0.08)]",
+    stroke: "var(--tactical-cyan)",
   },
   emerald: {
     text: "text-tacticalEmerald",
     border: "border-tacticalEmerald/30",
-    glow: "shadow-[0_0_24px_rgba(0,230,118,0.08)]",
-    stroke: "#00E676",
+    glow: "shadow-[0_0_24px_rgba(var(--tactical-emerald-rgb)/0.08)]",
+    stroke: "var(--tactical-emerald)",
   },
   amber: {
     text: "text-tacticalAmber",
     border: "border-tacticalAmber/30",
-    glow: "shadow-[0_0_24px_rgba(255,179,0,0.08)]",
-    stroke: "#FFB300",
+    glow: "shadow-[0_0_24px_rgba(var(--tactical-amber-rgb)/0.08)]",
+    stroke: "var(--tactical-amber)",
   },
 };
 
@@ -50,7 +50,7 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
     .join(" ");
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-9 mt-3" preserveAspectRatio="none">
-      <polyline fill="none" stroke={color} strokeWidth="2" points={pts} />
+      <polyline fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" points={pts} />
     </svg>
   );
 }
@@ -58,20 +58,20 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
 export function MetricCard({ label, value, change, subtext, icon: Icon, accent, sparkline }: MetricCardProps) {
   const a = ACCENT[accent];
   return (
-    <div className={cn("rounded-xl border bg-carbon p-5", a.border, a.glow)}>
+    <div className={cn("rounded-xl border bg-carbon p-5 shadow-tactical transition-colors", a.border, a.glow)}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-[11px] font-mono tracking-wider text-textMuted">{label}</div>
-          <div className={cn("text-2xl font-bold font-mono mt-2", a.text)}>{value}</div>
+          <div className="text-[11px] font-mono tracking-wider text-textMuted uppercase font-semibold">{label}</div>
+          <div className={cn("text-2xl font-bold font-mono mt-2 tracking-tight", a.text)}>{value}</div>
         </div>
-        <div className="p-2 rounded-lg bg-abyssal border border-surfaceBorder">
+        <div className="p-2.5 rounded-lg bg-abyssal border border-surfaceBorder shadow-inner">
           <Icon className={cn("w-4 h-4", a.text)} />
         </div>
       </div>
       <Sparkline data={sparkline} color={a.stroke} />
       <div className="mt-2 flex items-center justify-between text-[11px] font-mono">
-        <span className="text-gray-400 truncate">{subtext}</span>
-        <span className="flex items-center gap-1 text-tacticalEmerald shrink-0">
+        <span className="text-textSecondary truncate font-medium">{subtext}</span>
+        <span className="flex items-center gap-1 text-tacticalEmerald shrink-0 font-bold">
           <TrendingUp className="w-3 h-3" />
           {change}
         </span>

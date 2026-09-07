@@ -18,7 +18,7 @@ export function SubstanceDonut() {
             paddingAngle={3}
           >
             {SUBSTANCE_DISTRIBUTION.map((entry) => (
-              <Cell key={entry.name} fill={entry.color} />
+              <Cell key={entry.name} fill={entry.color} stroke="var(--surface-carbon)" strokeWidth={2} />
             ))}
           </Pie>
           <Tooltip
@@ -26,7 +26,14 @@ export function SubstanceDonut() {
               const kg = item.payload?.totalKg as number | undefined;
               return [`${value}% · ${kg ?? 0} kg`, String(name)];
             }}
-            contentStyle={{ background: "#121721", border: "1px solid #1E293B", fontSize: 12 }}
+            contentStyle={{
+              background: "var(--surface-carbon)",
+              border: "1px solid var(--surface-border)",
+              borderRadius: "8px",
+              color: "var(--text-main)",
+              fontSize: 12,
+              boxShadow: "var(--card-shadow)",
+            }}
           />
         </PieChart>
       </ResponsiveContainer>

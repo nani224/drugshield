@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,16 +9,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        abyssal: "#000000",
-        slateBg: "#0B0F17",
-        carbon: "#121721",
-        surfaceBorder: "#1E293B",
-        tacticalCyan: "#00F0FF",
-        tacticalEmerald: "#00E676",
-        tacticalAmber: "#FFB300",
-        tacticalCrimson: "#FF1744",
-        tacticalViolet: "#A855F7",
-        textMuted: "#94A3B8",
+        abyssal: "rgb(var(--surface-abyssal-rgb) / <alpha-value>)",
+        slateBg: "rgb(var(--bg-slate-rgb) / <alpha-value>)",
+        carbon: "rgb(var(--surface-carbon-rgb) / <alpha-value>)",
+        surfaceBorder: "rgb(var(--surface-border-rgb) / <alpha-value>)",
+        tacticalCyan: "rgb(var(--tactical-cyan-rgb) / <alpha-value>)",
+        tacticalEmerald: "rgb(var(--tactical-emerald-rgb) / <alpha-value>)",
+        tacticalAmber: "rgb(var(--tactical-amber-rgb) / <alpha-value>)",
+        tacticalCrimson: "rgb(var(--tactical-crimson-rgb) / <alpha-value>)",
+        tacticalViolet: "rgb(var(--tactical-violet-rgb) / <alpha-value>)",
+        textMain: "var(--text-main)",
+        textSecondary: "var(--text-secondary)",
+        textMuted: "var(--text-muted)",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
@@ -32,6 +35,9 @@ const config: Config = {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(1000%)" },
         },
+      },
+      boxShadow: {
+        tactical: "var(--card-shadow)",
       },
     },
   },

@@ -37,20 +37,20 @@ export default function RegistryPage() {
   }, [q, substance, status, from, to]);
 
   return (
-    <div className="p-6 lg:p-8 space-y-6">
+    <div className="p-6 lg:p-8 space-y-6 text-textMain">
       <div>
-        <p className="text-[10px] font-mono tracking-[0.2em] text-tacticalCyan">SEIZURE REGISTRY & LEDGER</p>
-        <h1 className="text-2xl font-bold mt-1">Full-width evidence data hub</h1>
+        <p className="text-[10px] font-mono tracking-[0.2em] text-tacticalCyan font-semibold">SEIZURE REGISTRY & LEDGER</p>
+        <h1 className="text-2xl font-bold mt-1 text-textMain">Full-width evidence data hub</h1>
       </div>
 
-      <div className="rounded-xl border border-surfaceBorder bg-carbon p-4 space-y-3">
+      <div className="rounded-xl border border-surfaceBorder bg-carbon p-4 space-y-3 shadow-tactical">
         <div className="relative">
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-textMuted" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search FIR / officer / seizure ID"
-            className="w-full bg-abyssal border border-surfaceBorder rounded-lg pl-10 pr-3 py-2 text-sm font-mono focus:outline-none focus:border-tacticalCyan"
+            className="w-full bg-abyssal border border-surfaceBorder rounded-lg pl-10 pr-3 py-2 text-sm font-mono text-textMain placeholder-textMuted focus:outline-none focus:border-tacticalCyan"
           />
         </div>
         <div className="flex flex-wrap gap-2 items-center">
@@ -58,8 +58,10 @@ export default function RegistryPage() {
             <button
               key={s}
               onClick={() => setSubstance(s)}
-              className={`px-2.5 py-1 rounded text-[10px] font-mono border ${
-                substance === s ? "bg-tacticalCyan text-black border-tacticalCyan" : "border-surfaceBorder text-gray-400"
+              className={`px-2.5 py-1 rounded text-[10px] font-mono border transition-colors ${
+                substance === s
+                  ? "bg-tacticalCyan text-white dark:text-black border-tacticalCyan font-semibold"
+                  : "border-surfaceBorder bg-carbon text-textMuted hover:text-textMain hover:border-tacticalCyan/40"
               }`}
             >
               {s}
@@ -70,8 +72,10 @@ export default function RegistryPage() {
             <button
               key={s}
               onClick={() => setStatus(s)}
-              className={`px-2.5 py-1 rounded text-[10px] font-mono border ${
-                status === s ? "bg-tacticalEmerald/20 text-tacticalEmerald border-tacticalEmerald/40" : "border-surfaceBorder text-gray-400"
+              className={`px-2.5 py-1 rounded text-[10px] font-mono border font-semibold transition-colors ${
+                status === s
+                  ? "bg-tacticalEmerald/20 text-tacticalEmerald border-tacticalEmerald/50"
+                  : "border-surfaceBorder bg-carbon text-textMuted hover:text-textMain hover:border-tacticalEmerald/40"
               }`}
             >
               {s}
@@ -81,20 +85,20 @@ export default function RegistryPage() {
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="ml-auto bg-abyssal border border-surfaceBorder rounded px-2 py-1 text-[11px] font-mono"
+            className="ml-auto bg-abyssal border border-surfaceBorder rounded px-2 py-1 text-[11px] font-mono text-textSecondary"
           />
           <input
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="bg-abyssal border border-surfaceBorder rounded px-2 py-1 text-[11px] font-mono"
+            className="bg-abyssal border border-surfaceBorder rounded px-2 py-1 text-[11px] font-mono text-textSecondary"
           />
         </div>
       </div>
 
-      <div className="rounded-xl border border-surfaceBorder bg-carbon overflow-x-auto">
+      <div className="rounded-xl border border-surfaceBorder bg-carbon overflow-x-auto shadow-tactical">
         <table className="min-w-[1080px] w-full text-left text-sm">
-          <thead className="text-[10px] font-mono tracking-wider text-textMuted border-b border-surfaceBorder bg-abyssal/80">
+          <thead className="text-[10px] font-mono tracking-wider text-textMuted border-b border-surfaceBorder bg-abyssal/80 font-semibold">
             <tr>
               <th className="px-4 py-3">FIR / SEIZURE ID</th>
               <th className="px-4 py-3">DATE / LOCATION</th>
@@ -105,43 +109,43 @@ export default function RegistryPage() {
               <th className="px-4 py-3">ACTION</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-surfaceBorder/60">
             {rows.map((s) => (
-              <tr key={s.id} className="border-b border-surfaceBorder/70 hover:bg-abyssal/40">
+              <tr key={s.id} className="hover:bg-abyssal/40 transition-colors">
                 <td className="px-4 py-3 align-top">
-                  <div className="font-mono text-xs text-tacticalCyan">{s.firNumber}</div>
+                  <div className="font-mono text-xs text-tacticalCyan font-semibold">{s.firNumber}</div>
                   <button
                     onClick={() => copyText(s.id)}
-                    className="mt-1 inline-flex items-center gap-1 text-[10px] font-mono text-gray-400 hover:text-white"
+                    className="mt-1 inline-flex items-center gap-1 text-[10px] font-mono text-textMuted hover:text-textMain transition-colors"
                   >
-                    {s.id} <Copy className="w-3 h-3" />
+                    {s.id} <Copy className="w-3 h-3 text-tacticalCyan" />
                   </button>
                 </td>
                 <td className="px-4 py-3 align-top text-xs">
-                  <div>{s.timestamp}</div>
-                  <div className="text-textMuted mt-1">
+                  <div className="text-textMain font-medium">{s.timestamp}</div>
+                  <div className="text-textSecondary mt-1">
                     {s.city} · {s.checkpost}
                   </div>
-                  <div className="font-mono text-[10px] text-textMuted">
+                  <div className="font-mono text-[10px] text-textMuted mt-0.5">
                     {s.coordinates.lat.toFixed(3)}°N {s.coordinates.lng.toFixed(3)}°E
                   </div>
                 </td>
                 <td className="px-4 py-3 align-top">
                   <div className="flex items-center gap-2">
                     <span
-                      className="w-4 h-4 rounded-sm border border-white/20"
+                      className="w-4 h-4 rounded-sm border border-black/20 dark:border-white/20 shrink-0"
                       style={{ background: s.colorimetricHex }}
                       title={s.reagentUsed}
                     />
                     <div>
-                      <div className="text-xs">{s.substance}</div>
+                      <div className="text-xs text-textMain font-medium">{s.substance}</div>
                       <div className="text-[10px] font-mono text-textMuted">{s.reagentUsed}</div>
                     </div>
                   </div>
                 </td>
                 <td className="px-4 py-3 align-top">
-                  <div className="font-mono text-xs text-tacticalEmerald">{formatWeight(s.weightGrams)}</div>
-                  <div className="mt-1 h-1.5 w-24 rounded bg-abyssal overflow-hidden">
+                  <div className="font-mono text-xs text-tacticalEmerald font-bold">{formatWeight(s.weightGrams)}</div>
+                  <div className="mt-1.5 h-1.5 w-24 rounded bg-abyssal overflow-hidden border border-surfaceBorder/50">
                     <div
                       className="h-full bg-tacticalCyan"
                       style={{ width: `${Math.min(100, (s.weightGrams / 8500) * 100)}%` }}
@@ -153,22 +157,22 @@ export default function RegistryPage() {
                 </td>
                 <td className="px-4 py-3 align-top">
                   <div className="flex items-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5 text-tacticalEmerald" />
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${statusChipClass(s.status)}`}>
+                    <Lock className="w-3.5 h-3.5 text-tacticalEmerald shrink-0" />
+                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${statusChipClass(s.status)}`}>
                       {s.status}
                     </span>
                   </div>
                   <button
                     onClick={() => copyText(s.fabricTxId)}
-                    className="mt-1 font-mono text-[10px] text-gray-400 hover:text-tacticalCyan inline-flex items-center gap-1"
+                    className="mt-1 font-mono text-[10px] text-textMuted hover:text-tacticalCyan inline-flex items-center gap-1 transition-colors"
                   >
-                    {truncateHash(s.fabricTxId, 12, 6)} <Copy className="w-3 h-3" />
+                    {truncateHash(s.fabricTxId, 12, 6)} <Copy className="w-3 h-3 text-tacticalCyan" />
                   </button>
                 </td>
                 <td className="px-4 py-3 align-top">
                   <button
                     onClick={() => setSelected(s)}
-                    className="text-[11px] font-mono px-3 py-1.5 rounded border border-tacticalCyan/40 text-tacticalCyan hover:bg-tacticalCyan/10"
+                    className="text-[11px] font-mono font-semibold px-3 py-1.5 rounded border border-tacticalCyan/40 text-tacticalCyan hover:bg-tacticalCyan/15 transition-colors"
                   >
                     Inspect Dossier
                   </button>
@@ -194,20 +198,20 @@ function ConfidenceRing({ value }: { value: number }) {
   return (
     <div className="flex items-center gap-2">
       <svg width="40" height="40" viewBox="0 0 40 40">
-        <circle cx="20" cy="20" r={r} fill="none" stroke="#1E293B" strokeWidth="3" />
+        <circle cx="20" cy="20" r={r} fill="none" stroke="var(--surface-border)" strokeWidth="3" />
         <circle
           cx="20"
           cy="20"
           r={r}
           fill="none"
-          stroke="#00E676"
+          stroke="var(--tactical-emerald)"
           strokeWidth="3"
           strokeDasharray={c}
           strokeDashoffset={offset}
           transform="rotate(-90 20 20)"
         />
       </svg>
-      <span className="font-mono text-xs">{value.toFixed(1)}%</span>
+      <span className="font-mono text-xs font-bold text-textMain">{value.toFixed(1)}%</span>
     </div>
   );
 }
