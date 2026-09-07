@@ -5,7 +5,7 @@
 - [x] Document fixes for all 12 issues
 - [x] Install all 11 VS Code extensions (Dart, Flutter, Go, Docker, Proto3, Tailwind, GitLens, Thunder, Prettier, ESLint, WSL)
 - [/] Install Flutter SDK (manual download required)
-- [/] Install Go 1.23+ (winget install running)
+- [x] Install Go 1.27+ (completed and verified)
 - [ ] Install Docker Desktop + WSL2
 - [ ] Install Android Studio + NDK
 
