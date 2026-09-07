@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { HotspotNode, CorridorVector, SeizureRecord } from "../types";
-import { Map, Layers, Radio, AlertTriangle, Shield, Navigation, Maximize2 } from "lucide-react";
+import { HotspotNode, CorridorVector, SeizureRecord, DrugCategory } from "../types";
+import { Map, Layers, Radio, Shield, Navigation } from "lucide-react";
 
 interface CorridorHeatmapProps {
   hotspots: HotspotNode[];
   corridors: CorridorVector[];
   selectedSeizure: SeizureRecord | null;
   onSelectNode?: (node: HotspotNode) => void;
+  compact?: boolean;
+  vectorFilter?: "ALL" | DrugCategory;
 }
 
 export const CorridorHeatmap: React.FC<CorridorHeatmapProps> = ({
@@ -16,6 +18,8 @@ export const CorridorHeatmap: React.FC<CorridorHeatmapProps> = ({
   corridors,
   selectedSeizure,
   onSelectNode,
+  compact = false,
+  vectorFilter = "ALL",
 }) => {
   const [activeNode, setActiveNode] = useState<HotspotNode | null>(hotspots[0]);
   const [showVectors, setShowVectors] = useState<boolean>(true);
@@ -53,7 +57,7 @@ export const CorridorHeatmap: React.FC<CorridorHeatmapProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slateBg relative overflow-hidden border-r border-surfaceBorder">
+    <div className={`flex flex-col ${compact ? "min-h-[460px] h-[460px]" : "min-h-[720px] h-[calc(100vh-220px)]"} bg-slateBg relative overflow-hidden rounded-xl border border-surfaceBorder`}>
       {/* Top Map Toolbar */}
       <div className="p-3 border-b border-surfaceBorder bg-carbon/90 flex flex-wrap items-center justify-between gap-3 z-10">
         <div className="flex items-center gap-2">
@@ -157,7 +161,9 @@ export const CorridorHeatmap: React.FC<CorridorHeatmapProps> = ({
 
           {/* Trafficking Corridor Flow Vectors */}
           {showVectors &&
-            corridors.map((corridor) => {
+            corridors
+              .filter((c) => vectorFilter === "ALL" || c.dominantVector === vectorFilter)
+              .map((corridor) => {
               const start = projectCoords(corridor.originCoords[0], corridor.originCoords[1]);
               const end = projectCoords(corridor.destCoords[0], corridor.destCoords[1]);
               const midX = (start.x + end.x) / 2 + (start.y - end.y) * 0.15;

@@ -1,112 +1,134 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Shield, Radio, Activity, Lock, Cpu, Globe } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Activity, Radio, Search, Siren, FileBarChart, Command } from "lucide-react";
+import { INITIAL_SEIZURES } from "../mockData";
+import { useShell } from "./shell-context";
 
-export const Header: React.FC = () => {
-  const [timeStr, setTimeStr] = useState<string>("");
-  const [blockHeight, setBlockHeight] = useState<number>(142891);
+export function Header() {
+  const { searchOpen, setSearchOpen } = useShell();
+  const [query, setQuery] = useState("");
+  const [timeStr, setTimeStr] = useState("");
+  const [secondsFlash, setSecondsFlash] = useState(true);
+  const [blockHeight, setBlockHeight] = useState(142891);
 
   useEffect(() => {
-    const updateTime = () => {
+    const tick = () => {
       const now = new Date();
-      setTimeStr(
-        now.toLocaleDateString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }) +
-          " " +
-          now.toLocaleTimeString("en-IN", {
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          }) +
-          " IST"
-      );
+      const date = now.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+      const hms = now.toLocaleTimeString("en-IN", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      setTimeStr(`${date} ${hms} IST`);
+      setSecondsFlash((s) => !s);
     };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-
-    // Simulate occasional block advancement
-    const blockInterval = setInterval(() => {
-      setBlockHeight((prev) => prev + 1);
-    }, 12000);
-
+    tick();
+    const clock = setInterval(tick, 1000);
+    const blocks = setInterval(() => setBlockHeight((n) => n + 1), 12000);
     return () => {
-      clearInterval(interval);
-      clearInterval(blockInterval);
+      clearInterval(clock);
+      clearInterval(blocks);
     };
   }, []);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+      if (e.key === "Escape") setSearchOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [setSearchOpen]);
+
+  const hits = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return INITIAL_SEIZURES.slice(0, 5);
+    return INITIAL_SEIZURES.filter(
+      (s) =>
+        s.firNumber.toLowerCase().includes(q) ||
+        s.officerName.toLowerCase().includes(q) ||
+        s.officerId.toLowerCase().includes(q) ||
+        s.substance.toLowerCase().includes(q) ||
+        s.sha256Hash.toLowerCase().includes(q) ||
+        s.id.toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [query]);
+
   return (
-    <header className="border-b border-surfaceBorder bg-carbon/95 backdrop-blur px-4 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3 sticky top-0 z-50">
-      {/* Left: Branding & Node Info */}
-      <div className="flex items-center gap-3 w-full md:w-auto">
-        <div className="flex items-center justify-center w-10 h-10 rounded-md bg-abyssal border border-tacticalCyan/40 text-tacticalCyan shadow-[0_0_12px_rgba(0,240,255,0.2)]">
-          <Shield className="w-6 h-6" />
+    <header className="sticky top-0 z-40 border-b border-surfaceBorder bg-carbon/95 backdrop-blur px-4 lg:px-6 py-3 flex flex-col xl:flex-row gap-3 xl:items-center">
+      <button
+        onClick={() => setSearchOpen(true)}
+        className="flex-1 min-w-0 flex items-center gap-3 rounded-lg border border-surfaceBorder bg-abyssal px-3 py-2 text-sm text-textMuted hover:border-tacticalCyan/40"
+      >
+        <Search className="w-4 h-4 text-tacticalCyan shrink-0" />
+        <span className="truncate">Search FIRs, officers, drugs, SHA-256 hashes…</span>
+        <span className="ml-auto hidden sm:flex items-center gap-1 text-[10px] font-mono border border-surfaceBorder rounded px-1.5 py-0.5">
+          <Command className="w-3 h-3" />K
+        </span>
+      </button>
+
+      <div className="flex flex-wrap items-center gap-2 justify-end">
+        <div className="flex items-center gap-2 font-mono text-xs border border-surfaceBorder rounded-lg px-3 py-2 bg-abyssal">
+          <Radio className="w-3.5 h-3.5 text-tacticalEmerald" />
+          <span className="text-gray-300">{timeStr || "SYNCING CLOCK"}</span>
+          <span className={`w-1.5 h-1.5 rounded-full ${secondsFlash ? "bg-tacticalEmerald" : "bg-tacticalEmerald/30"}`} />
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-bold tracking-wider text-sm text-white">
-              NATIONAL NARCOTICS SEIZURE INTELLIGENCE NETWORK
-            </span>
-            <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-tacticalCyan/10 border border-tacticalCyan/30 text-tacticalCyan font-semibold">
-              NNSIN-DEFENSE
-            </span>
+
+        <div className="flex items-center gap-2 font-mono text-xs border border-tacticalCyan/30 rounded-lg px-3 py-2 bg-tacticalCyan/5">
+          <Activity className="w-3.5 h-3.5 text-tacticalCyan" />
+          <span className="text-textMuted">Block</span>
+          <span className="text-tacticalCyan font-bold">#{blockHeight.toLocaleString("en-IN")}</span>
+        </div>
+
+        <button className="inline-flex items-center gap-1.5 rounded-lg border border-surfaceBorder px-3 py-2 text-xs font-mono hover:border-tacticalCyan/50">
+          <FileBarChart className="w-3.5 h-3.5 text-tacticalCyan" />
+          Generate Report
+        </button>
+        <button className="inline-flex items-center gap-1.5 rounded-lg border border-tacticalCrimson/40 bg-tacticalCrimson/10 px-3 py-2 text-xs font-mono text-tacticalCrimson hover:bg-tacticalCrimson/20">
+          <Siren className="w-3.5 h-3.5" />
+          Emergency Interdiction Broadcast
+        </button>
+      </div>
+
+      {searchOpen && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm p-4 flex items-start justify-center pt-[12vh]">
+          <div className="w-full max-w-2xl rounded-xl border border-tacticalCyan/30 bg-carbon shadow-[0_0_40px_rgba(0,240,255,0.12)]">
+            <div className="flex items-center gap-2 border-b border-surfaceBorder px-4 py-3">
+              <Search className="w-4 h-4 text-tacticalCyan" />
+              <input
+                autoFocus
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="FIR / officer / drug / SHA-256"
+                className="flex-1 bg-transparent outline-none text-sm font-mono"
+              />
+              <button onClick={() => setSearchOpen(false)} className="text-[10px] font-mono text-textMuted border border-surfaceBorder rounded px-1.5 py-0.5">
+                ESC
+              </button>
+            </div>
+            <div className="max-h-[360px] overflow-y-auto divide-y divide-surfaceBorder/60">
+              {hits.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setSearchOpen(false)}
+                  className="w-full text-left px-4 py-3 hover:bg-abyssal"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-xs text-tacticalCyan">{s.firNumber}</span>
+                    <span className="text-[10px] text-textMuted">{s.id}</span>
+                  </div>
+                  <div className="text-sm text-white mt-0.5">{s.substance} · {s.officerName}</div>
+                  <div className="text-[10px] font-mono text-textMuted mt-1 truncate">{s.sha256Hash}</div>
+                </button>
+              ))}
+              {hits.length === 0 && (
+                <div className="px-4 py-8 text-center text-xs font-mono text-textMuted">No ledger matches.</div>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-3 text-xs text-textMuted font-mono">
-            <span className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-tacticalEmerald animate-ping" />
-              SECURE NODE #01 (NEW DELHI HQ)
-            </span>
-            <span className="text-surfaceBorder">|</span>
-            <span className="text-gray-400">SIH26231 • CYBERSECURITY & BLOCKCHAIN</span>
-          </div>
         </div>
-      </div>
-
-      {/* Center: System Telemetry Badges */}
-      <div className="hidden lg:flex items-center gap-4 bg-abyssal/80 border border-surfaceBorder px-3 py-1.5 rounded-lg text-xs font-mono">
-        <div className="flex items-center gap-1.5 text-textMuted">
-          <Cpu className="w-3.5 h-3.5 text-tacticalCyan" />
-          <span>LEDGER:</span>
-          <span className="text-tacticalCyan font-semibold">
-            #{blockHeight.toLocaleString()}
-          </span>
-        </div>
-
-        <div className="h-3 w-px bg-surfaceBorder" />
-
-        <div className="flex items-center gap-1.5 text-textMuted">
-          <Activity className="w-3.5 h-3.5 text-tacticalEmerald" />
-          <span>RAFT CONSENSUS:</span>
-          <span className="text-tacticalEmerald font-semibold">4/4 ORGS SYNCED</span>
-        </div>
-
-        <div className="h-3 w-px bg-surfaceBorder" />
-
-        <div className="flex items-center gap-1.5 text-textMuted">
-          <Lock className="w-3.5 h-3.5 text-tacticalAmber" />
-          <span>SIGNER:</span>
-          <span className="text-white">STRONGBOX P-256</span>
-        </div>
-      </div>
-
-      {/* Right: Clock & Operational Readiness */}
-      <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end font-mono text-xs">
-        <div className="flex items-center gap-2 bg-surfaceBorder/40 px-2.5 py-1 rounded border border-surfaceBorder text-gray-300">
-          <Radio className="w-3.5 h-3.5 text-tacticalEmerald animate-pulse" />
-          <span>{timeStr || "LOADING TELEMETRY..."}</span>
-        </div>
-
-        <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-tacticalEmerald/10 border border-tacticalEmerald/30 text-tacticalEmerald font-bold tracking-wider text-[11px]">
-          <span className="w-2 h-2 rounded-full bg-tacticalEmerald" />
-          DEFCON 4 • NORMAL
-        </div>
-      </div>
+      )}
     </header>
   );
-};
+}

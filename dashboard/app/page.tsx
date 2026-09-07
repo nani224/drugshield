@@ -1,70 +1,176 @@
 "use client";
 
 import React, { useState } from "react";
-import { Header } from "../components/Header";
-import { MetricStrip } from "../components/MetricStrip";
-import { SeizureStream } from "../components/SeizureStream";
+import Link from "next/link";
+import { IndianRupee, Crosshair, ShieldCheck, MapPin, Search } from "lucide-react";
+import { MetricCard } from "../components/MetricCard";
 import { CorridorHeatmap } from "../components/CorridorHeatmap";
-import { CourtroomVerifier } from "../components/CourtroomVerifier";
-import { INITIAL_SEIZURES, HOTSPOT_NODES, CORRIDOR_VECTORS } from "../mockData";
-import { SeizureRecord, HotspotNode } from "../types";
+import { SeizureDrawer } from "../components/SeizureDrawer";
+import {
+  INITIAL_SEIZURES,
+  HOTSPOT_NODES,
+  CORRIDOR_VECTORS,
+  NETWORK_EVENTS,
+  KPI_SPARKLINES,
+} from "../mockData";
+import type { DrugCategory, SeizureRecord } from "../types";
+import { formatWeight, statusChipClass } from "../lib/utils";
 
-export default function DashboardPage() {
-  const [seizures] = useState<SeizureRecord[]>(INITIAL_SEIZURES);
-  const [selectedSeizure, setSelectedSeizure] = useState<SeizureRecord | null>(
-    INITIAL_SEIZURES[0]
-  );
-  const [hotspots] = useState<HotspotNode[]>(HOTSPOT_NODES);
-  const [corridors] = useState(CORRIDOR_VECTORS);
+const REGION_FILTERS: Array<"ALL" | DrugCategory> = [
+  "ALL",
+  "Heroin",
+  "Meth",
+  "Cocaine",
+  "Cannabis",
+  "Synthetic",
+];
 
-  const handleSelectSeizure = (seizure: SeizureRecord) => {
-    setSelectedSeizure(seizure);
-  };
-
-  const handleSelectNode = (node: HotspotNode) => {
-    // Optionally find a seizure matching the node
-    const matchingSeizure = seizures.find(
-      (s) => s.category.toLowerCase() === node.dominantSubstance.toLowerCase()
-    );
-    if (matchingSeizure) {
-      setSelectedSeizure(matchingSeizure);
-    }
-  };
+export default function CommandCockpitPage() {
+  const [filter, setFilter] = useState<"ALL" | DrugCategory>("ALL");
+  const [selected, setSelected] = useState<SeizureRecord | null>(null);
+  const recent = INITIAL_SEIZURES.slice(0, 5);
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-slateBg overflow-hidden select-none">
-      {/* Top Header Bar */}
-      <Header />
+    <div className="p-6 lg:p-8 space-y-8">
+      <div>
+        <p className="text-[10px] font-mono tracking-[0.2em] text-tacticalCyan">COMMAND COCKPIT</p>
+        <h1 className="text-2xl font-bold mt-1">Live situational overview</h1>
+        <p className="text-sm text-textMuted mt-1">
+          National interdiction posture — street value, AI confirmation, custody integrity, and corridor vectors.
+        </p>
+      </div>
 
-      {/* Top Executive KPI Metric Strip */}
-      <MetricStrip />
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        <MetricCard
+          label="TOTAL STREET VALUE INTERDICTED"
+          value="₹482.5 Cr"
+          change="+12.4% MoM"
+          subtext="14,892 seizures on ledger"
+          icon={IndianRupee}
+          accent="cyan"
+          sparkline={KPI_SPARKLINES.streetValue}
+        />
+        <MetricCard
+          label="PRESUMPTIVE AI ACCURACY"
+          value="98.4%"
+          change="CFSL concordant"
+          subtext="MobileNetV3 INT8 on-device"
+          icon={Crosshair}
+          accent="emerald"
+          sparkline={KPI_SPARKLINES.accuracy}
+        />
+        <MetricCard
+          label="BLOCKCHAIN CUSTODY INTEGRITY"
+          value="100.0%"
+          change="0 breaches"
+          subtext="Fabric 3.0 private collections"
+          icon={ShieldCheck}
+          accent="emerald"
+          sparkline={KPI_SPARKLINES.integrity}
+        />
+        <MetricCard
+          label="ACTIVE CORRIDORS"
+          value="6 Vectors"
+          change="128 nodes"
+          subtext="Golden Crescent & coastal"
+          icon={MapPin}
+          accent="amber"
+          sparkline={KPI_SPARKLINES.corridors}
+        />
+      </div>
 
-      {/* Main 3-Column Situational Intelligence Cockpit */}
-      <main className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden">
-        {/* Left Column: Real-time Seizure Stream (340px) */}
-        <div className="w-full lg:w-[340px] xl:w-[380px] shrink-0 h-[380px] lg:h-full border-b lg:border-b-0 border-surfaceBorder overflow-hidden">
-          <SeizureStream
-            seizures={seizures}
-            selectedSeizure={selectedSeizure}
-            onSelectSeizure={handleSelectSeizure}
-          />
-        </div>
-
-        {/* Center Column: National 3D Corridor Heatmap Canvas (Flex-1) */}
-        <div className="flex-1 h-[450px] lg:h-full min-w-0 border-b lg:border-b-0 border-surfaceBorder overflow-hidden">
+      <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-6">
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-sm font-mono tracking-wider">CORRIDOR HEATMAP SNAPSHOT</h2>
+            <div className="flex flex-wrap gap-1">
+              {REGION_FILTERS.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`px-2.5 py-1 rounded text-[10px] font-mono border ${
+                    filter === f
+                      ? "bg-tacticalCyan text-black border-tacticalCyan"
+                      : "border-surfaceBorder text-gray-400 hover:text-white"
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+          </div>
           <CorridorHeatmap
-            hotspots={hotspots}
-            corridors={corridors}
-            selectedSeizure={selectedSeizure}
-            onSelectNode={handleSelectNode}
+            compact
+            vectorFilter={filter}
+            hotspots={HOTSPOT_NODES}
+            corridors={CORRIDOR_VECTORS}
+            selectedSeizure={recent[0]}
           />
         </div>
 
-        {/* Right Column: Courtroom Evidence Verification Dock (360px) */}
-        <div className="w-full lg:w-[360px] xl:w-[400px] shrink-0 h-[450px] lg:h-full overflow-hidden">
-          <CourtroomVerifier selectedSeizure={selectedSeizure} />
+        <div className="rounded-xl border border-surfaceBorder bg-carbon p-5 flex flex-col">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-mono tracking-wider">PRIORITY SEIZURE TICKER</h2>
+            <Link href="/registry" className="text-[10px] font-mono text-tacticalCyan">
+              OPEN REGISTRY →
+            </Link>
+          </div>
+          <div className="space-y-3 flex-1">
+            {recent.map((s) => (
+              <div key={s.id} className="rounded-lg border border-surfaceBorder bg-abyssal/50 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-xs text-white">{s.id}</span>
+                  <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${statusChipClass(s.status)}`}>
+                    {s.status}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <span
+                    className="w-3.5 h-3.5 rounded-sm border border-white/20 shrink-0"
+                    style={{ background: s.colorimetricHex }}
+                    title={s.reagentUsed}
+                  />
+                  <span className="text-xs text-gray-200 truncate">{s.substance}</span>
+                  <span className="ml-auto text-xs font-mono text-tacticalEmerald">{formatWeight(s.weightGrams)}</span>
+                </div>
+                <div className="flex items-center justify-between mt-2 text-[10px] font-mono text-textMuted">
+                  <span>{s.timestamp.split(" ")[1]} IST</span>
+                  <button
+                    onClick={() => setSelected(s)}
+                    className="text-tacticalCyan hover:underline inline-flex items-center gap-1"
+                  >
+                    <Search className="w-3 h-3" />
+                    Inspect
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
+      </div>
+
+      <section className="rounded-xl border border-surfaceBorder bg-carbon p-6">
+        <h2 className="text-sm font-mono tracking-wider mb-4">RECENT NETWORK ACTIVITY</h2>
+        <ul className="space-y-3">
+          {NETWORK_EVENTS.map((e) => (
+            <li key={e.id} className="flex items-start gap-3 text-sm border-b border-surfaceBorder/60 pb-3 last:border-0 last:pb-0">
+              <span
+                className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
+                  e.severity === "ALERT"
+                    ? "bg-tacticalCrimson"
+                    : e.severity === "PRIORITY"
+                      ? "bg-tacticalAmber"
+                      : "bg-tacticalCyan"
+                }`}
+              />
+              <span className="font-mono text-[10px] text-textMuted w-20 shrink-0">{e.timestamp}</span>
+              <span className="text-gray-200">{e.message}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <SeizureDrawer seizure={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }
